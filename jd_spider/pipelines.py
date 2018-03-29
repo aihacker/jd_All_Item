@@ -5,7 +5,7 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import pymongo
-from .items import ProductsItem
+from .items import *
 db_url ='mongodb://localhost:27017'
 db_name = 'test'
 class JdSpiderPipeline(object):
@@ -16,7 +16,12 @@ class JdSpiderPipeline(object):
         self.client.close()
     def process_item(self, item, spider):
         if isinstance(item,ProductsItem):
-            collection = self.db['iphonex']
+            collection = self.db['ProductsItem']
+            post = dict(item)
+            collection.insert(post)
+            return item
+        elif isinstance(item,CategoriesItem):
+            collection = self.db['CategoriesItem']
             post = dict(item)
             collection.insert(post)
             return item
